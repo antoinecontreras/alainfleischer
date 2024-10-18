@@ -7,7 +7,7 @@
 
 a {
     text-decoration: none;
-    color: black;
+    /* color: black; */
 
 }
 
@@ -115,16 +115,15 @@ h6 {
     color: var(--grey);
 }
 
-.collection_filter a:not(.active) {
-    /* color: var(--grey); */
-}
-.collection_filter a{
-    color: var(--grey);
-}
-.collection_filter a:target {
-    color: black;
+
+.collection_filter a {
+    color: grey; /* Couleur par défaut */
+    text-decoration: none;
 }
 
+.collection_filter a.active {
+    color: black; /* Couleur active */
+}
 
 .collection_category {
     display: none;

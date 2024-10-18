@@ -1,4 +1,6 @@
-<?php namespace ProcessWire;
+<?php
+
+namespace ProcessWire;
 
 // Template file for “home” template used by the homepage
 // ------------------------------------------------------
@@ -23,20 +25,20 @@ foreach ($projects as $project) {
 <div id="content" class="container">
 	<div class="page_row collection_nav">
 		<?php foreach ($projectsByCategory as $categoryTitle => $projects) : ?>
-				<?php foreach ($projects as $project) : ?>
-					<div class="nav_item" id="<?= $project->name; ?>">
-					<div class="nav_wallpaper">	
+			<?php foreach ($projects as $project) : ?>
+				<div class="nav_item" id="<?= $project->name; ?>">
+					<div class="nav_wallpaper">
 						<img class="" draggable="false" src="<?php echo $project->img->url; ?>" />
-					</div>	
+					</div>
 					<?php if ($project->gallery) : ?>
 						<div class="nav_gallery">
-								<?php foreach ($project->gallery as $gallery) : ?>
-									<img draggable="false" width="300" src="<?php echo $gallery->url; ?>" />
-								<?php endforeach; ?>
-							<?php endif; ?>
-					</div>	
+							<?php foreach ($project->gallery as $gallery) : ?>
+								<img draggable="false" width="300" src="<?php echo $gallery->url; ?>" />
+							<?php endforeach; ?>
+						<?php endif; ?>
+						</div>
 				</div>
-				<?php endforeach; ?>			
+			<?php endforeach; ?>
 		<?php endforeach; ?>
 	</div>
 
@@ -45,41 +47,36 @@ foreach ($projects as $project) {
 
 	<div class="page_row collection_tab">
 		<div class="collection_filter">
-		<?php
+			<?php
 			$counter = 0;
-foreach ($projectsByCategory as $categoryTitle => $projects) : 
-    $filters = [];
-    foreach ($projects as $project) :
-        $filterTitle = $project->filter->title;
+			foreach ($projectsByCategory as $categoryTitle => $projects) :
+				$filters = [];
+				foreach ($projects as $project) :
+					$filterTitle = $project->filter->title;
 
-        if (!isset($filters[$filterTitle])) :
-            $filters[$filterTitle] = $filterTitle; ?>
-            <a href="#<?= $filterTitle; ?>" class="<?= $counter === 0 ? 'active' : '' ?>"><?= $filterTitle ?></a>
-            <?php endif; 
-	$counter++;
-	endforeach; 
-endforeach;
-?>
-
-
-
+					if (!isset($filters[$filterTitle])) :
+						$filters[$filterTitle] = $filterTitle; ?>
+						<a href="#<?= $filterTitle; ?>" class="filter-link" onclick="highlightLink('<?= $filterTitle; ?>')"><?= $filterTitle ?></a>
+			<?php endif;
+				endforeach;
+			endforeach; ?>
 		</div>
-		<?php 	$counter = 0;
-		foreach ($projectsByCategory as $categoryTitle => $projects) :?>
-    			<div id="<?=$categoryTitle; ?>" class="collection_category <?= $counter === 0 ? 'active' : '' ?>">
-			  
 
-        			<?php foreach ($projects as $project) : ?>
-            		<a draggable="false" id="<?=$project->title; ?>" class="collection_item ">
-                		<p><?php echo $project->filter->title; ?></p>
-                		<img draggable="false" src="<?php echo $project->img->url; ?>" />
-               				 <p><?=$project->title; ?></p>
-               				 <p><?=$project->date . ' - ' . $project->date_end; ?></p>
-               				 <p><?=$project->textarea; ?></p>
+		<!-- Section des projets -->
+		<?php foreach ($projectsByCategory as $categoryTitle => $projects) : ?>
+			<div id="<?= $categoryTitle; ?>" class="collection_category">
+				<?php foreach ($projects as $project) : ?>
+					<a draggable="false" class="collection_item">
+						<p><?php echo $project->filter->title; ?></p>
+						<img draggable="false" src="<?php echo $project->img->url; ?>" />
+						<p><?= $project->title; ?></p>
+						<p><?= $project->date . ' - ' . $project->date_end; ?></p>
+						<p><?= $project->textarea; ?></p>
 					</a>
-	        <?php $counter++;
-			 endforeach; ?>
-	    </div> 
-	<?php endforeach; ?>
+				<?php endforeach; ?>
+			</div>
+		<?php endforeach; ?>
 	</div>
-</div>	
+
+
+</div>
