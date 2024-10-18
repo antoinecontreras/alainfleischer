@@ -1,7 +1,7 @@
 <?php namespace ProcessWire;
 
-// Optional main output file, called after rendering page’s template file. 
 // This is defined by $config->appendTemplateFile in /site/config.php, and
+// Optional main output file, called after rendering page’s template file. 
 // is typically used to define and output markup common among most pages.
 // 	
 // When the Markup Regions feature is used, template files can prepend, append,
@@ -14,6 +14,14 @@
 	
 $home = $pages->get('/'); /** @var HomePage $home */
 
+$urlMenu = [];
+$urlMenu[] = ['url' => $pages->findOne("name=home")->url, 'title' => 'Collection'];
+$urlMenu[] = ['url' => $pages->findOne("name=fond_de_dotation")->url, 'title' => 'Fond de Dotation'];
+$urlMenu[] = ['url' => $pages->findOne("name=bio")->url, 'title' => 'Biographie'];
+$urlMenu[] = ['url' => $pages->findOne("name=news")->url, 'title' => 'News'];
+
+
+
 ?><!DOCTYPE html>
 <html lang="en">
 	<head id="html-head">
@@ -24,17 +32,20 @@ $home = $pages->get('/'); /** @var HomePage $home */
 	</head>
 	<body id="html-body">
 
-		<p id="topnav">
-			<?php echo $home->and($home->children)->implode(" / ", "<a href='{url}'>{title}</a>"); ?>
-		</p>
-		
-		<hr />
+		<div class="menu" id="topnav" style="background:<?= $home->color; ?>">
+			<div class="menu_items"> <?php foreach ($urlMenu as $item) {
+    				echo "<a draggable='false' href='{$item['url']}'>{$item['title']}</a> ";
+				}?>
+			</div>
+			 <a draggable="false" href="mailto:<?php echo $home->email; ?>">Contact</a>
+			</div>
+
 		
 		<h1 id="headline">
 			<?php if($page->parents->count()): // breadcrumbs ?>
-				<?php echo $page->parents->implode(" &gt; ", "<a href='{url}'>{title}</a>"); ?> &gt;
+				
 			<?php endif; ?>
-			<?php echo $page->title; // headline ?>
+			<?php  $page->title; // headline ?>
 		</h1>
 		
 		<div id="content">
@@ -43,12 +54,12 @@ $home = $pages->get('/'); /** @var HomePage $home */
 	
 		<?php if($page->hasChildren): ?>
 		<ul> 
-			<?php echo $page->children->each("<li><a href='{url}'>{title}</a></li>"); // subnav ?>
+			<?php  $page->children->each("<li><a href='{url}'>{title}</a></li>"); // subnav ?>
 		</ul>	
 		<?php endif; ?>
 		
 		<?php if($page->editable()): ?>
-		<p><a href='<?php echo $page->editUrl(); ?>'>Edit this page</a></p>
+		
 		<?php endif; ?>
 	
 	</body>
