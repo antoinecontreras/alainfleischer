@@ -24,6 +24,7 @@
  *
  */
 
+
 if(!defined("PROCESSWIRE")) define("PROCESSWIRE", 300); // index version
 $rootPath = __DIR__;
 if(DIRECTORY_SEPARATOR != '/') $rootPath = str_replace(DIRECTORY_SEPARATOR, '/', $rootPath);

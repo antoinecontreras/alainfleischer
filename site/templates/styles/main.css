@@ -1,0 +1,23 @@
+:root{
+    --margin: 2em;
+}
+
+.container{
+    display: flex;
+}
+.row{
+    flex:1;
+}
+.collection_grid{
+    display: grid;
+    grid-gap: var(--margin);
+    grid-template-columns: repeat(3, 1fr);
+    grid-auto-rows: minmax(90px, auto);
+    overflow: hidden;
+}
+.collection_grid > .collection_grid_item {
+    display: flex;
+} 
+img{  
+    max-width: 100%;
+}
