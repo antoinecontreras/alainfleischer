@@ -30,7 +30,7 @@ $urlMenu[] = ['url' => $pages->findOne("name=news")->url, 'title' => 'News'];
 		<link rel="stylesheet" type="text/css" href="<?php echo $config->urls->templates; ?>styles/main.css" />
 		<script src="<?php echo $config->urls->templates; ?>scripts/main.js"></script>
 	</head>
-	<body id="html-body">
+	<body id="html-body" data-page-type="<?= $page->template ?>" >
 
 		<div class="menu" id="topnav" style="background:<?= $home->color; ?>">
 			<div class="menu_items"> <?php foreach ($urlMenu as $item) {

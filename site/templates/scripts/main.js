@@ -1,37 +1,61 @@
-// Example JS file
-document.addEventListener('contextmenu', function(e) {
-    if (e.target.tagName === 'IMG') {
-      e.preventDefault();
-    }
-  });
-  window.onload = function() {
-   // Récupérer le fragment d'URL
-   const hash = window.location.hash;
+document.addEventListener("contextmenu", function (e) {
+  if (e.target.tagName === "IMG") e.preventDefault();
+});
+window.onload = function () {};
+document.addEventListener("DOMContentLoaded", function () {
+  var pageType = document.body.getAttribute("data-page-type");
+  console.log(pageType);
+  switch (pageType) {
+    case "home":
+      initHash();
+      initNav();
+      break;
+    case "bio":
+      break;
+    case "news":
+      break;
 
-   // Vérifier s'il y a un hash et appeler highlightLink
-   if (hash) {
-       const filterTitle = hash.substring(1); // Enlever le '#' pour obtenir le titre
-       highlightLink(filterTitle);
-   } else {
-     // Si pas de hash, mettre par défaut le premier filtre
-     const firstFilter = document.querySelector('.filter-link'); // Assurez-vous que c'est la première balise <a> avec class "filter-link"
-     if (firstFilter) {
-         console.log(firstFilter.innerText);
-           highlightLink(firstFilter.innerText); // Utiliser le texte du premier lien
-           firstFilter.click(); // Simuler un clic sur le premier lien
-       }
-   }
-};
-  function highlightLink(filterTitle) {
-    // Retire la classe active de tous les liens
-    const links = document.querySelectorAll('.collection_filter a');
-    links.forEach(link => {
-        link.classList.remove('active');
-    });
-    
-    // Ajoute la classe active au lien qui a été cliqué
-    const activeLink = document.querySelector(`.collection_filter a[href="#${filterTitle}"]`);
-    if (activeLink) {
-        activeLink.classList.add('active');
+    default:
+      break;
+  }
+});
+function initHash() {
+  const hash = window.location.hash;
+  if (hash) {
+    const filterTitle = hash.substring(1);
+    highlightLink(filterTitle);
+  } else {
+    const firstFilter = document.querySelector(".filter-link");
+    if (firstFilter) {
+      highlightLink(firstFilter.innerText);
+      firstFilter.click();
     }
+  }
+}
+function highlightLink(filterTitle) {
+  const links = document.querySelectorAll(".collection_filter a");
+  links.forEach((link) => {
+    link.classList.remove("active");
+  });
+  const activeLink = document.querySelector(
+    `.collection_filter a[href="#${filterTitle}"]`
+  );
+  if (activeLink) {
+    activeLink.classList.add("active");
+  }
+}
+
+function initNav() {
+  const items = document.querySelectorAll(".collection_item");
+  const nav = document.querySelectorAll(".nav_item");
+
+  items.forEach((item) => {
+    item.addEventListener("click", () => {
+      nav.forEach((navItem) => navItem.classList.remove("active"));
+      const targetNav = document.getElementById(item.id);
+      if (targetNav) {
+        targetNav.classList.add("active");
+      }
+    });
+  });
 }

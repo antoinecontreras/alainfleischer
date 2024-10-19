@@ -79,6 +79,9 @@ h6 {
     position: absolute;
     display: none;
 }
+.collection_nav .nav_item.active {
+    display: block;
+}
 
 .collection_nav .nav_wallpaper {
     display: flex;

@@ -21,12 +21,11 @@ foreach ($projects as $project) {
 	}
 }
 ?>
-
 <div id="content" class="container">
 	<div class="page_row collection_nav">
 		<?php foreach ($projectsByCategory as $categoryTitle => $projects) : ?>
 			<?php foreach ($projects as $project) : ?>
-				<div class="nav_item" id="<?= $project->name; ?>">
+				<div class="nav_item" id="<?= $project->title; ?>">
 					<div class="nav_wallpaper">
 						<img class="" draggable="false" src="<?php echo $project->img->url; ?>" />
 					</div>
@@ -56,7 +55,7 @@ foreach ($projects as $project) {
 
 					if (!isset($filters[$filterTitle])) :
 						$filters[$filterTitle] = $filterTitle; ?>
-						<a href="#<?= $filterTitle; ?>" class="filter-link" onclick="highlightLink('<?= $filterTitle; ?>')"><?= $filterTitle ?></a>
+						<a draggable="false" href="#<?= $filterTitle; ?>" class="filter-link" onclick="highlightLink('<?= $filterTitle; ?>')"><?= $filterTitle ?></a>
 			<?php endif;
 				endforeach;
 			endforeach; ?>
@@ -66,8 +65,8 @@ foreach ($projects as $project) {
 		<?php foreach ($projectsByCategory as $categoryTitle => $projects) : ?>
 			<div id="<?= $categoryTitle; ?>" class="collection_category">
 				<?php foreach ($projects as $project) : ?>
-					<a draggable="false" class="collection_item">
-						<p><?php echo $project->filter->title; ?></p>
+					<a id="<?= $project->title; ?>" draggable="false" class="collection_item">
+
 						<img draggable="false" src="<?php echo $project->img->url; ?>" />
 						<p><?= $project->title; ?></p>
 						<p><?= $project->date . ' - ' . $project->date_end; ?></p>
