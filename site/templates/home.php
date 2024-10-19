@@ -12,13 +12,13 @@ namespace ProcessWire;
 $projects = $pages->find("template=project");
 $projectsByCategory = [];
 foreach ($projects as $project) {
-	if ($project->img) {
+	
 		$categoryTitle = $project->filter->title;
 		if (!isset($projectsByCategory[$categoryTitle])) {
 			$projectsByCategory[$categoryTitle] = [];
 		}
 		$projectsByCategory[$categoryTitle][] = $project;
-	}
+	
 }
 ?>
 <div id="content" class="container">
@@ -26,9 +26,13 @@ foreach ($projects as $project) {
 		<?php foreach ($projectsByCategory as $categoryTitle => $projects) : ?>
 			<?php foreach ($projects as $project) : ?>
 				<div class="nav_item" id="<?= $project->title; ?>">
-					<div class="nav_wallpaper">
-						<img class="" draggable="false" src="<?php echo $project->img->url; ?>" />
-					</div>
+					<?php if ($project->img) : ?>
+						<div class="nav_wallpaper">
+							<img class="" draggable="false" src="<?php echo $project->img->url; ?>" />
+						</div>
+					<?php endif; ?>
+					<p><?= $project->textarea; ?></p>
+					<p><?= $project->date . ' - ' . $project->date_end; ?></p>
 					<?php if ($project->gallery) : ?>
 						<div class="nav_gallery">
 							<?php foreach ($project->gallery as $gallery) : ?>
@@ -48,11 +52,12 @@ foreach ($projects as $project) {
 		<div class="collection_filter">
 			<?php
 			$counter = 0;
+
 			foreach ($projectsByCategory as $categoryTitle => $projects) :
 				$filters = [];
 				foreach ($projects as $project) :
 					$filterTitle = $project->filter->title;
-
+			
 					if (!isset($filters[$filterTitle])) :
 						$filters[$filterTitle] = $filterTitle; ?>
 						<a draggable="false" href="#<?= $filterTitle; ?>" class="filter-link" onclick="highlightLink('<?= $filterTitle; ?>')"><?= $filterTitle ?></a>
@@ -65,12 +70,13 @@ foreach ($projects as $project) {
 		<?php foreach ($projectsByCategory as $categoryTitle => $projects) : ?>
 			<div id="<?= $categoryTitle; ?>" class="collection_category">
 				<?php foreach ($projects as $project) : ?>
-					<a id="<?= $project->title; ?>" draggable="false" class="collection_item">
-
-						<img draggable="false" src="<?php echo $project->img->url; ?>" />
+					<a id="<?= $project->title; ?>" draggable="false" class="collection_item <?= $project->img ? 'with_img' : ''; ?> ">
+						<?php if ($project->img) : ?>
+							<img draggable="false" src="<?php echo $project->img->url; ?>" />
+						<?php endif ?>
 						<p><?= $project->title; ?></p>
-						<p><?= $project->date . ' - ' . $project->date_end; ?></p>
-						<p><?= $project->textarea; ?></p>
+
+
 					</a>
 				<?php endforeach; ?>
 			</div>

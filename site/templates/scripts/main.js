@@ -48,14 +48,28 @@ function highlightLink(filterTitle) {
 function initNav() {
   const items = document.querySelectorAll(".collection_item");
   const nav = document.querySelectorAll(".nav_item");
+  const targetNav =  document.querySelector(".collection_nav");
 
   items.forEach((item) => {
-    item.addEventListener("click", () => {
+    item.addEventListener("mouseenter", () => {
+      targetNav.scrollTo({
+        top: 0,
+        behavior: "instant",
+      });
       nav.forEach((navItem) => navItem.classList.remove("active"));
-      const targetNav = document.getElementById(item.id);
-      if (targetNav) {
-        targetNav.classList.add("active");
+      const searchTarget = document.getElementById(item.id);
+      if (searchTarget) {
+        searchTarget.classList.add("active");
       }
+    });
+
+    item.addEventListener("click", () => {
+      targetNav.scrollTo({
+        top: 1000,
+        behavior: "smooth",
+      });
+    
+  
     });
   });
 }
