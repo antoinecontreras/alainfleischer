@@ -49,6 +49,7 @@ function initNav() {
   const items = document.querySelectorAll(".collection_item");
   const nav = document.querySelectorAll(".nav_item");
   const targetNav =  document.querySelector(".collection_nav");
+  let decayNav;
 
   items.forEach((item) => {
     item.addEventListener("mouseenter", () => {
@@ -60,12 +61,15 @@ function initNav() {
       const searchTarget = document.getElementById(item.id);
       if (searchTarget) {
         searchTarget.classList.add("active");
+        decayNav = searchTarget.querySelector(".nav_cartel").offsetHeight;
+        console.log(decayNav);
       }
     });
 
     item.addEventListener("click", () => {
+      console.log(decayNav);
       targetNav.scrollTo({
-        top: 1000,
+        top: decayNav,
         behavior: "smooth",
       });
     

@@ -27,6 +27,8 @@ $urlMenu[] = ['url' => $pages->findOne("name=news")->url, 'title' => 'News'];
 	<head id="html-head">
 		<meta http-equiv="content-type" content="text/html; charset=utf-8" />
 		<title><?php echo $page->title; ?></title>
+		<link rel="stylesheet" href="<?= $config->urls->templates ?>font/Selecta-Regular.woff2" as="font" type="font/woff2" crossorigin>
+
 		<link rel="stylesheet" type="text/css" href="<?php echo $config->urls->templates; ?>styles/main.css" />
 		<script src="<?php echo $config->urls->templates; ?>scripts/main.js"></script>
 	</head>
