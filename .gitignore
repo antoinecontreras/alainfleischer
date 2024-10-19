@@ -18,6 +18,6 @@
 !/site/modules/ProcessWire/*
 !/site/modules/Process/*
 !/site/modules/Fieldtype*
-
+!/site/templates/font*
 # Dossier de wire (si tu utilises un dépôt de ProcessWire)
 wire/
