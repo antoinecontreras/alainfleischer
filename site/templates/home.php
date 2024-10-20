@@ -34,9 +34,13 @@ foreach ($projects as $project) {
 					<p><?= $project->date . ' - ' . $project->date_end; ?></p>
 					<?php if ($project->gallery) : ?>
 						<div class="nav_gallery">
-							<?php foreach ($project->gallery as $gallery) : ?>
-								<img draggable="false" width="300" src="<?php echo $gallery->url; ?>" />
+							<?php
+						
+							foreach ($project->gallery as $image) : 
+								bd($image); ?>
+								<img draggable="false" width="300" src="<?php echo $image->url; ?>" />
 							<?php endforeach; ?>
+		
 						<?php endif; ?>
 						</div>
 				</div>

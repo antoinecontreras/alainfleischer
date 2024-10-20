@@ -62,7 +62,6 @@ function initNav() {
       if (searchTarget) {
         searchTarget.classList.add("active");
         decayNav = searchTarget.querySelector(".nav_cartel").offsetHeight;
-        console.log(decayNav);
       }
     });
 
