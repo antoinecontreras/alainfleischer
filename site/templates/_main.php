@@ -46,6 +46,13 @@ $dynamicLight = "hsl($h, 64%, 93%)";
 <body id="html-body" data-page-type="<?= $page->template ?>">
 
 	<div class="menu" id="topnav" style="background:<?= $home->color; ?>">
+		<input type="checkbox" id="menuToggle" class="menu_toggle">
+		<label for="menuToggle" class="menu_burger">
+			<!-- Icone du burger -->
+			<span></span>
+			<span></span>
+			<span></span>
+		</label>
 		<div class="menu_items"> <?php foreach ($urlMenu as $item) {
 										echo "<a draggable='false' href='{$item['url']}'>{$item['title']}</a> ";
 									} ?>
