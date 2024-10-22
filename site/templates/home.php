@@ -10,6 +10,7 @@ namespace ProcessWire;
 // See the Markup Regions documentation:
 // https://processwire.com/docs/front-end/output/markup-regions/
 $projects = $pages->find("template=project");
+
 $projectsByCategory = [];
 foreach ($projects as $project) {
 
@@ -81,9 +82,11 @@ foreach ($projects as $project) {
 				foreach ($projectsByYear as $year => $projects) :
 					echo "<p class='collection_year'>{$year}</p>"; ?>
 					<div class='collection_items'>
-						<?php foreach ($projects as $project) : ?>
-
-							<a id="<?= $project->title; ?>" draggable="false" class="collection_item <?= $project->img ? 'with_img' : ''; ?>">
+						<?php foreach ($projects as $project) :
+							$projectRef = $project->name;
+							$parentRef = $project->parent->name;
+						?>
+							<a data-project="<?= $projectRef ?>" data-parent="<?= $parentRef ?>" id="<?= $project->title; ?>" draggable="false" class="collection_item <?= $project->img ? 'with_img' : ''; ?>">
 								<?php if ($project->img) :
 									$img = $project->img;
 									$focusX = $img->focus["left"];
