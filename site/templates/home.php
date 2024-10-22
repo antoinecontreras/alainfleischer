@@ -25,9 +25,10 @@ foreach ($projects as $project) {
 		<?php foreach ($projectsByCategory as $categoryTitle => $projects) : ?>
 			<?php foreach ($projects as $project) : ?>
 				<div class="nav_item" id="<?= $project->title; ?>">
-					<?php if ($project->img) : ?>
+					<?php if ($project->img) :
+					?>
 						<div class="nav_wallpaper">
-							<img class="" draggable="false" src="<?php echo $project->img->url; ?>" />
+							<img class="" draggable="false" src="<?= $project->img->url ?>" />
 						</div>
 					<?php endif; ?>
 					<h2 class="nav_cartel"><?= $project->textarea; ?></h2>
@@ -35,12 +36,11 @@ foreach ($projects as $project) {
 					<?php if ($project->gallery) : ?>
 						<div class="nav_gallery">
 							<?php
-						
-							foreach ($project->gallery as $image) : 
-								bd($image); ?>
+
+							foreach ($project->gallery as $image) : ?>
 								<img draggable="false" width="300" src="<?php echo $image->url; ?>" />
 							<?php endforeach; ?>
-		
+
 						<?php endif; ?>
 						</div>
 				</div>
@@ -79,16 +79,28 @@ foreach ($projects as $project) {
 					$projectsByYear[$year][] = $project;
 				endforeach;
 				foreach ($projectsByYear as $year => $projects) :
-					echo "<p class='collection_year'>{$year}</p>";
-					foreach ($projects as $project) : ?>
-						<a id="<?= $project->title; ?>" draggable="false" class="collection_item <?= $project->img ? 'with_img' : ''; ?>">
-							<?php if ($project->img) : ?>
-								<img draggable="false" src="<?php echo $project->img->url; ?>" />
-							<?php endif; ?>
-							<p><?= $project->title; ?></p>
-						</a>
+					echo "<p class='collection_year'>{$year}</p>"; ?>
+					<div class='collection_items'>
+						<?php foreach ($projects as $project) : ?>
+
+							<a id="<?= $project->title; ?>" draggable="false" class="collection_item <?= $project->img ? 'with_img' : ''; ?>">
+								<?php if ($project->img) :
+									$img = $project->img;
+									$focusX = $img->focus["left"];
+									$focusY = $img->focus["top"];
+								?>
+									<img draggable="false" src="<?= $img->url; ?>"
+										alt="<?= $project->title; ?>"
+										style=" 
+									transform-origin: <?= $focusX; ?>% <?= $focusY; ?>%;" />
+								<?php endif; ?>
+							</a>
+
+
+
+						<?php endforeach; ?>
+					</div>
 				<?php endforeach;
-				endforeach;
 				?>
 			</div> <!-- Fin de la catégorie -->
 		<?php endforeach; ?>

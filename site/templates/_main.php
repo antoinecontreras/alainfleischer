@@ -40,7 +40,11 @@ $dynamicLight = "hsl($h, 64%, 93%)";
 	<script src="<?php echo $config->urls->templates; ?>scripts/main.js"></script>
 </head>
 <style>
-
+	@media only screen and (max-width: 1300px) {
+		#topnav::before {
+			background: <?= $home->color; ?>;
+		}
+	}
 </style>
 
 <body id="html-body" data-page-type="<?= $page->template ?>">
@@ -53,9 +57,13 @@ $dynamicLight = "hsl($h, 64%, 93%)";
 			<span></span>
 			<span></span>
 		</label>
-		<div class="menu_items"> <?php foreach ($urlMenu as $item) {
-										echo "<a draggable='false' href='{$item['url']}'>{$item['title']}</a> ";
-									} ?>
+		<div class="menu_items">
+			<?php foreach ($urlMenu as $item) {
+				$activeClass = ($item['url'] == $page->url) ? 'active' : '';
+				echo "<a draggable='false' href='{$item['url']}' class='{$activeClass}'>{$item['title']}</a> ";
+
+			} ?>
+		<a class="contact_mobile" draggable="false" href="mailto:<?php echo $home->email; ?>">Contact</a>
 		</div>
 		<div draggable='false' class="menu_logo">
 			<div class="logo">Alain</div>
