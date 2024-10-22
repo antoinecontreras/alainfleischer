@@ -21,11 +21,11 @@ foreach ($projects as $project) {
 	$projectsByCategory[$categoryTitle][] = $project;
 }
 ?>
-<div id="content" class="container">
+<div id="content" class="container home">
 	<div class="page_row collection_nav">
 		<?php foreach ($projectsByCategory as $categoryTitle => $projects) : ?>
 			<?php foreach ($projects as $project) : ?>
-				<div class="nav_item" id="<?= $project->title; ?>">
+				<div class="nav_item" id="<?= urlencode($project->title); ?>">
 					<?php if ($project->img) :
 					?>
 						<div class="nav_wallpaper">
@@ -64,7 +64,7 @@ foreach ($projects as $project) {
 
 					if (!isset($filters[$filterTitle])) :
 						$filters[$filterTitle] = $filterTitle; ?>
-						<a draggable="false" href="#<?= $filterTitle; ?>" class="filter-link" onclick="highlightLink('<?= $filterTitle; ?>')"><?= $filterTitle ?></a>
+						<a draggable="false" href="#<?=urlencode($filterTitle); ?>" class="filter-link" onclick="highlightLink('<?= $filterTitle; ?>')"><?= $filterTitle ?></a>
 			<?php endif;
 				endforeach;
 			endforeach; ?>
@@ -72,7 +72,7 @@ foreach ($projects as $project) {
 
 		<!-- Section des projets -->
 		<?php foreach ($projectsByCategory as $categoryTitle => $projects) : ?>
-			<div id="<?= $categoryTitle; ?>" class="collection_category">
+			<div id="<?= urlencode($categoryTitle); ?>" class="collection_category">
 				<?php
 				$projectsByYear = [];
 				foreach ($projects as $project) :
@@ -83,10 +83,16 @@ foreach ($projects as $project) {
 					echo "<p class='collection_year'>{$year}</p>"; ?>
 					<div class='collection_items'>
 						<?php foreach ($projects as $project) :
-							$projectRef = $project->name;
-							$parentRef = $project->parent->name;
+						
+							$filterRef =  urlencode($project->filter->title);
+							$projectRef =  urlencode($project->title);
+							$parentRef =  urlencode($project->parent->title);
 						?>
-							<a data-project="<?= $projectRef ?>" data-parent="<?= $parentRef ?>" id="<?= $project->title; ?>" draggable="false" class="collection_item <?= $project->img ? 'with_img' : ''; ?>">
+							<a 
+							data-filter="<?= $filterRef ?>"
+							data-project="<?= $projectRef ?>"
+							data-parent="<?= $parentRef?>"
+							id="<?=urlencode($project->title); ?>" draggable="false" class="collection_item <?= $project->img ? 'with_img' : ''; ?>">
 								<?php if ($project->img) :
 									$img = $project->img;
 									$focusX = $img->focus["left"];

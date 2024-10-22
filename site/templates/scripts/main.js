@@ -19,7 +19,6 @@ document.addEventListener("DOMContentLoaded", function () {
       VALUES.homeInit = true;
       break;
     case "projects":
-      console.log("test");
       break;
     case "news":
       break;
@@ -77,6 +76,7 @@ function highlightLink(filterTitle) {
   const activeLink = document.querySelector(
     `.collection_filter a[href="#${filterTitle}"]`
   );
+  console.log(activeLink);
   if (activeLink) {
     activeLink.classList.add("active");
   }
@@ -149,9 +149,9 @@ function mobileNav(options) {
   options.items.forEach((item) => {
     const onClickOrTouch = () => {
       if (!isDesktopLayout.value) { // Si c'est mobile
-        const link = `${item.dataset.parent}#${item.dataset.project}`; // Création de l'URL
+        const link = `${item.dataset.parent}/?valeur=${item.dataset.project}&filter=${item.dataset.filter}`; // Création de l'URL
         window.location.href = link; // Redirection
-      }
+      } 
     };
     
 

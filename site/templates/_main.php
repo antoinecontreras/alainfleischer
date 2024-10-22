@@ -26,7 +26,14 @@ $urlMenu[] = ['url' => $pages->findOne("name=news")->url, 'title' => 'News'];
 $hslColor = $home->color;
 list($h, $s, $l) = sscanf($hslColor, 'hsl(%d, %d%%, %d%%)');
 $dynamicLight = "hsl($h, 64%, 93%)";
-
+$backMenu = $page->template->name == "projects";
+$backLink= null;
+if ($backMenu) {
+    if (isset($_GET['filter'])) {
+        $valeur = $_GET['filter']; // Récupère la valeur du filtre
+		$backLink = $pages->findOne("template=home")->url."#".$valeur;
+    }
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -50,7 +57,11 @@ $dynamicLight = "hsl($h, 64%, 93%)";
 <body id="html-body" data-page-type="<?= $page->template ?>">
 
 	<div class="menu" id="topnav" style="background:<?= $home->color; ?>">
+		<a draggable='false' href='<?=$backLink?>' class='menu_back <?= ($backMenu) ? 'active' : '' ?>'>
+			<img src="<?= $config->urls->templates ?>picto/back.svg" alt="" />
+		</a>
 		<input type="checkbox" id="menuToggle" class="menu_toggle">
+
 		<label for="menuToggle" class="menu_burger">
 			<!-- Icone du burger -->
 			<span></span>
@@ -61,9 +72,8 @@ $dynamicLight = "hsl($h, 64%, 93%)";
 			<?php foreach ($urlMenu as $item) {
 				$activeClass = ($item['url'] == $page->url) ? 'active' : '';
 				echo "<a draggable='false' href='{$item['url']}' class='{$activeClass}'>{$item['title']}</a> ";
-
 			} ?>
-		<a class="contact_mobile" draggable="false" href="mailto:<?php echo $home->email; ?>">Contact</a>
+			<a class="contact_mobile" draggable="false" href="mailto:<?php echo $home->email; ?>">Contact</a>
 		</div>
 		<div draggable='false' class="menu_logo">
 			<div class="logo">Alain</div>

@@ -69,6 +69,7 @@ h2 {
     flex-wrap: wrap;
 }
 
+.menu_back,
 .menu_burger,
 .menu_toggle {
     display: none;
@@ -86,6 +87,25 @@ h2 {
         z-index: 10;
     }
 
+    .menu_back.active {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: calc(var(--menu-height) + var(--margin) / 2);
+        height: calc(var(--menu-height) + var(--margin) / 2);
+        display: flex;
+        align-content: center;
+        justify-content: center;
+        flex-wrap: wrap;
+        background: white;
+        z-index: 100;
+    }
+    .menu_back.active img{
+        height: (var(--margin) / 2 );
+    }
+    .menu_back.active+.menu_toggle+.menu_burger {
+        transform: translate(calc(var(--menu-height) + var(--margin) / 2), 0);
+    }
     .menu {
         padding-top: calc(var(--margin) / 2);
         align-content: flex-start;
@@ -111,6 +131,7 @@ h2 {
         transform-origin: center;
         width: 30px;
     }
+
 
     .menu_toggle:checked+.menu_burger span:nth-child(1) {
         transform: rotate(45deg) translate(6px, 6px);
@@ -222,10 +243,11 @@ h2 {
 }
 
 .container {
-    display: flex;
     overflow: hidden;
+    display: flex;
     height: var(--height-container);
 }
+
 
 /* @media only screen and (max-width: 768px) { */
 @media only screen and (max-width: 1300px) {
@@ -295,7 +317,34 @@ h2 {
     display: flex;
     flex-direction: column;
 }
+.projectMobile_tab{
+    
+    overflow: scroll;
+}
+ .projectMobile_tab .thumbnail{
+    /* padding: calc(var(--margin) / 4); */
+    height: 50%;
+}   
+.projectMobile_tab .gallery{
+    display: flex; 
+    flex-direction: column;
+    gap: calc(var(--margin) / 4);
+    padding: calc(var(--margin) / 4);
+}
+.projectMobile_tab .thumbnail img{
+    height: 100%;
+    object-fit: cover;
+    width: 100%;
 
+}
+.projectMobile_tab .cartel{
+    height: calc(50% - var(--margin) / 4);
+    display: flex;
+    flex-direction: column;
+    padding: calc(var(--margin) / 4);
+    align-items: flex-start;
+    justify-content: space-between;
+}
 .nav_gallery img {
     width: 100%;
     height: auto;
