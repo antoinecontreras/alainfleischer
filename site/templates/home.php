@@ -64,7 +64,7 @@ foreach ($projects as $project) {
 
 					if (!isset($filters[$filterTitle])) :
 						$filters[$filterTitle] = $filterTitle; ?>
-						<a draggable="false" href="#<?=urlencode($filterTitle); ?>" class="filter-link" onclick="highlightLink('<?= $filterTitle; ?>')"><?= $filterTitle ?></a>
+						<a draggable="false" href="#<?= urlencode($filterTitle); ?>" class="filter-link" onclick="highlightLink('<?= $filterTitle; ?>')"><?= $filterTitle ?></a>
 			<?php endif;
 				endforeach;
 			endforeach; ?>
@@ -83,16 +83,16 @@ foreach ($projects as $project) {
 					echo "<p class='collection_year'>{$year}</p>"; ?>
 					<div class='collection_items'>
 						<?php foreach ($projects as $project) :
-						
+
 							$filterRef =  urlencode($project->filter->title);
 							$projectRef =  urlencode($project->title);
 							$parentRef =  urlencode($project->parent->title);
 						?>
-							<a 
-							data-filter="<?= $filterRef ?>"
-							data-project="<?= $projectRef ?>"
-							data-parent="<?= $parentRef?>"
-							id="<?=urlencode($project->title); ?>" draggable="false" class="collection_item <?= $project->img ? 'with_img' : ''; ?>">
+							<a
+								data-filter="<?= $filterRef ?>"
+								data-project="<?= $projectRef ?>"
+								data-parent="<?= $parentRef ?>"
+								id="<?= urlencode($project->title); ?>" draggable="false" class="collection_item interactive_item <?= $project->img ? 'with_img' : ''; ?>">
 								<?php if ($project->img) :
 									$img = $project->img;
 									$focusX = $img->focus["left"];

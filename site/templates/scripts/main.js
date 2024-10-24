@@ -21,6 +21,10 @@ document.addEventListener("DOMContentLoaded", function () {
     case "projects":
       break;
     case "news":
+      const optionsNew = initNav();
+      initNews(optionsNew);
+      
+      // initdesktopNav(optionsNew)
       break;
 
     default:
@@ -35,7 +39,6 @@ window.addEventListener("resize", function () {
 });
 
 function initdesktopNav(options) {
-  // Si on est sur une autre page que "home", on ne fait rien
   if (VALUES.pageType !== "home") return;
 
   // Comportement pour large (desktop)
@@ -53,6 +56,7 @@ function initdesktopNav(options) {
     VALUES.currentMode = "mobile"; // On marque qu'on est en mode mobile
   }
 }
+
 
 function initHash() {
   const hash = window.location.hash;
@@ -76,7 +80,6 @@ function highlightLink(filterTitle) {
   const activeLink = document.querySelector(
     `.collection_filter a[href="#${filterTitle}"]`
   );
-  console.log(activeLink);
   if (activeLink) {
     activeLink.classList.add("active");
   }
@@ -88,9 +91,26 @@ let isDesktopLayout = {
     return screenWidth >= 1300; // Détecte les écrans larges
   },
 };
+function initNews(options) {
+  if (isDesktopLayout.value && VALUES.currentMode !== "desktop") {
+    disableListeners(options);
+    
+    newsDesktopNav(options);
+    VALUES.currentMode = "desktop";
+  } else if (!isDesktopLayout.value && VALUES.currentMode !== "mobile") {
+    // Désactiver les comportements desktop
+    disableListeners(options);
+    
+    // Pas de hover/click spécifique pour mobile
+    // Juste laisser les éléments en ligne comme souhaité
+    mobileNewsNav(options);
+    VALUES.currentMode = "mobile";
+  }
+}
+
 
 function initNav() {
-  const items = document.querySelectorAll(".collection_item");
+  const items = document.querySelectorAll(".interactive_item");
   const nav = document.querySelectorAll(".nav_item");
   const targetNav = document.querySelector(".collection_nav");
   let decayNav;
@@ -114,6 +134,7 @@ function desktopNav(options) {
         });
         options.nav.forEach((navItem) => navItem.classList.remove("active"));
         const searchTarget = document.getElementById(item.id);
+        console.log(item  );
         if (searchTarget) {
           searchTarget.classList.add("active");
           options.decayNav =
@@ -143,6 +164,47 @@ function desktopNav(options) {
   // Marquer comme actif sur desktop
   VALUES.homeActive = true;
 }
+function newsDesktopNav(options) {
+
+  options.items.forEach((item) => {
+    const onMouseEnter = () => {
+      
+      if (isDesktopLayout.value) {  
+        // Comportement au survol (hover)
+        options.targetNav.scrollTo({
+          top: 0,
+          behavior: "instant",
+        });
+        options.nav.forEach((navItem) => navItem.classList.remove("active"));
+        const searchTarget = document.getElementById(item.id);
+        if (searchTarget) {
+          searchTarget.classList.add("active");
+          options.decayNav =
+            searchTarget.querySelector(".nav_cartel").offsetHeight;
+        }
+      }
+    };
+
+    const onClick = (event) => {
+      if (isDesktopLayout.value) {
+        event.preventDefault();
+        options.targetNav.scrollTo({
+          top: options.decayNav,
+          behavior: "smooth",
+        });
+      }
+    };
+
+    // Ajouter les listeners de survol et clic
+    item.addEventListener("mouseenter", onMouseEnter);
+    item.addEventListener("click", onClick);
+
+    // Stocker les listeners
+    item._listeners = { onMouseEnter, onClick };
+  });
+
+  VALUES.homeActive = true;
+}
 
 // Comportement pour la version mobile (small/hybride)
 function mobileNav(options) {
@@ -165,6 +227,14 @@ function mobileNav(options) {
 
   // Marquer comme actif sur mobile
   VALUES.homeActive = true;
+}
+function mobileNewsNav(options) {
+  // Désactiver toute interaction supplémentaire pour mobile
+  // Aucun besoin de hover/click, juste inline
+  options.items.forEach((item) => {
+    item.removeEventListener("mouseenter", item._listeners.onMouseEnter);
+    item.removeEventListener("click", item._listeners.onClick);
+  });
 }
 
 function disableListeners(options) {
