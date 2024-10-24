@@ -33,14 +33,19 @@ uksort($newsByDate, function ($a, $b) {
     <div class="page_row collection_nav">
         <?php foreach ($newsByDate as $date => $newsItems) :
             foreach ($newsItems as $new): ?>
-                <div class="nav_item" id="<?= urlencode($date) ?>">
-                    <?php
+                <div class="nav_item news" id="<?= urlencode($date) ?>">
+                    <div class="nav_news">
+                        <?php
                         $cartel = $new->textarea;
-                    if (!empty($cartel)) : ?>
+                        if (!empty($cartel)) : ?>
+                            <h2 class="nav_cartel"><?= $cartel; ?></h2>
+                        <?php endif; ?>
+                    </div>
+                    <div>
                         <h2 class='nav_cartel'> <?= $date ?></h2>
-                        <h2 class="nav_cartel"><?= $cartel; ?></h2>
-                    <?php endif; ?>
+                    </div>
                 </div>
+
             <?php endforeach; ?>
         <?php endforeach; ?>
     </div>
@@ -50,11 +55,9 @@ uksort($newsByDate, function ($a, $b) {
 
         // Boucle sur les dates triées
         foreach ($newsByDate as $date => $newsItems) {
-            // Créer un objet DateTime pour formater la date
             $dateFromObj = new \DateTime($date);
-            $monthYear = $dateFromObj->format('F Y'); // Récupérer le mois et l'année au format 'Month Year'
+            $monthYear = $dateFromObj->format('F Y');
 
-            // Afficher le mois et l'année
             if ($currentMonthYear !== $monthYear) {
                 $currentMonthYear = $monthYear;
                 echo "<p class='news_date'>$currentMonthYear</p>"; // Affichez le mois et l'année
@@ -62,35 +65,50 @@ uksort($newsByDate, function ($a, $b) {
 
             foreach ($newsItems as $new) {
                 $title = $new->title;
-                if (!empty($title)) :
+                if (!empty($title)):
                     $place = $new->place;
                     $dateFrom = $new->date; // Date de début
                     $dateTo = $new->date_end; // Date de fin
-                    $dateToObj = new \DateTime($dateTo); ?>
+                    $dateToObj = new \DateTime($dateTo);
+                    $informations = $new->textarea;
+                    $more_description = $new->more_description;
+                    $link = $new->link; ?>
                     <div class="news_item interactive_item" id="<?= urlencode($dateFrom) ?>">
+                        <?php if (!empty($link)): ?>
+                            <a target='_blank' draggable='false' href='<?= $link ?>' class="new_link">
+                                <p class='news_title'><?= $title ?></p>
+                                <img src="<?= $config->urls->templates ?>picto/back.svg" alt="" />
+                            </a>
+                        <?php else: ?>
+                            <p class='news_title'><?= $title ?></p>
                         <?php
-                        $informations = $new->textarea;
-                        $more_description = $new->more_description;
-                        $link = $new->link;
+                        endif; ?>
 
-                        echo "<p class='news_title'>$title</p>";
-                        if (!empty($place)) {
-                            echo "<p><strong>Adresse : </strong>$place</p>";
-                        }
-                        if (!empty($dateFrom)) {
-                            echo "<p><strong>Date : </strong>" . $dateFromObj->format('F j, Y') . " " . (!empty($dateTo) ? "- " . $dateToObj->format('F j, Y') : '') . "</p>";
-                        }
-                        if (!empty($informations)) {
-                            "<p><strong>Informations : </strong>$informations</p>";
-                        }
-                        if (!empty($more_description)) {
+                        <div class="news_description">
+                            <?php
+                            if (!empty($informations)) {
+                                "<p>" . $informations . "</p>";
+                            }
 
-                            $cleanHTML = html_entity_decode($more_description);
-                            echo "<p><strong>Informations supplémentaires : </strong></p>" . $cleanHTML;
-                        }
+                            if (!empty($more_description)) {
 
-                        if (!empty($link)) {
-                            echo "<a draggable='false' target='_blank' href='$link'>$link</a>";
+                                $cleanHTML = html_entity_decode($more_description);
+                                echo  $cleanHTML;
+                            }
+
+                            if (!empty($place)) {
+                                echo "<p>$place</p>";
+                            }
+                            if (!empty($dateFrom)) {
+                                echo "<p class='new_date'>" . $dateFromObj->format('F j, Y') . " " . (!empty($dateTo) ? "- " . $dateToObj->format('F j, Y') : '') . "</p>";
+                            }
+
+
+
+                            ?>
+                        </div>
+                        <?php if (!empty($cartel)) {
+                            echo   "<div class='nav_cartelMobile'>" . html_entity_decode($cartel) . "</div>";;
                         }
                         ?>
                     </div>
