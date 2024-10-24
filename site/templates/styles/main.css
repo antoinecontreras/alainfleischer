@@ -272,6 +272,8 @@ h2 {
     flex-direction: column;
     text-transform: capitalize;
     position: relative;
+    overflow: scroll;
+
 }
 
 
