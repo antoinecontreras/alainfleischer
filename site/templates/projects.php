@@ -8,8 +8,7 @@ if (isset($_GET['valeur'])) {
 } else {
     echo "Aucune valeur passée dans l'URL.";
 }
-$project = $pages->findOne("template=project, name=$valeur");
-
+$project = $pages->findOne("template=project, title=$valeur");
 ?>
 
 
@@ -17,19 +16,24 @@ $project = $pages->findOne("template=project, name=$valeur");
 
 <div id="content" class="container">
 
-    <div class="projectMobile_tab" id="<?= $project->title; ?>">
+    <div class="projectSmall" id="<?= $project->title; ?>">
         <?php if ($project->img) :
         ?>
-            <div class="thumbnail">
-                <img class="" draggable="false" src="<?= $project->img->url ?>" />
+            <div class="thumbProject">
+                <div>
+                    <img class="" draggable="false" src="<?= $project->img->url ?>" />
+                </div>
+                <div class="cartelProject">
+                    <p style="font-size:xx-large;">Title</p>
+                    <p><?= $project->date . ' - ' . $project->date_end; ?></p>
+                    <p class="infoProject"><?= $project->textarea; ?></p>
+                </div>
             </div>
         <?php endif; ?>
-        <div class="cartel">
-            <h2 class="nav_cartel"><?= $project->textarea; ?></h2>
-            <p><?= $project->date . ' - ' . $project->date_end; ?></p>
-        </div>
+
+
         <?php if ($project->gallery) : ?>
-            <div class="gallery">
+            <div class="galleryProject">
                 <?php
 
                 foreach ($project->gallery as $image) : ?>

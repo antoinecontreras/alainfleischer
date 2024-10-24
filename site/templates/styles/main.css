@@ -97,7 +97,7 @@ h2 {
         align-content: center;
         justify-content: center;
         flex-wrap: wrap;
-        background: white;
+        background: #f8f8f8;
         z-index: 100;
     }
     .menu_back.active img{
@@ -313,39 +313,47 @@ h2 {
     height: var(--height-container);
 }
 
-.collection_nav .nav_gallery {
+
+.projectSmall{
+    overflow: scroll;
+}
+ .projectSmall .thumbProject{
+    height: 100%;
+    width: 100%;
+    position: relative;
+    z-index: -1;
     display: flex;
     flex-direction: column;
 }
-.projectMobile_tab{
-    
-    overflow: scroll;
+.thumbProject img{
+    object-fit: cover;
+    width: 100%;
+    height: 100%;
 }
- .projectMobile_tab .thumbnail{
-    /* padding: calc(var(--margin) / 4); */
-    height: 50%;
-}   
-.projectMobile_tab .gallery{
+.projectSmall .galleryProject{
     display: flex; 
     flex-direction: column;
     gap: calc(var(--margin) / 4);
-    padding: calc(var(--margin) / 4);
+    /* padding: calc(var(--margin) / 4); */
 }
-.projectMobile_tab .thumbnail img{
-    height: 100%;
-    object-fit: cover;
-    width: 100%;
 
+.cartelProject .infoProject{
+    font-size: 1.8rem;
+    line-height: 1.8rem;
+    color: var(--dark-grey);
 }
-.projectMobile_tab .cartel{
-    height: calc(50% - var(--margin) / 4);
+.cartelProject,
+.galleryProject{
+    background-color: white;
+}
+.projectSmall .cartelProject{
     display: flex;
     flex-direction: column;
     padding: calc(var(--margin) / 4);
     align-items: flex-start;
     justify-content: space-between;
 }
-.nav_gallery img {
+.galleryProject img {
     width: 100%;
     height: auto;
     object-fit: cover;

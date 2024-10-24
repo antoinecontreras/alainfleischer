@@ -1,0 +1,376 @@
+<?php namespace ProcessWire;
+
+
+/**
+ * ProcessWire Address Fieldtype
+ * Copyright 2018-2019 Netcarver.
+ *
+ * Field that stores string values for street addresses.
+ *
+ * ProcessWire 3
+ * Copyright (C) 2017 by Ryan Cramer
+ *
+ * http://www.processwire.com
+ * http://www.ryancramer.com
+ *
+ */
+
+class FieldtypeStreetAddress extends Fieldtype
+{
+
+    /**
+     *
+     */
+    public static function getModuleInfo()
+    {
+        return [
+            'title'      => __('Street Address'),
+            'summary'    => __("Fieldtype to store a street address and allows access to it's subfields."),
+            'version'    => '1.1.3',
+            'author'     => 'Netcarver',
+            'installs'   => 'InputfieldStreetAddress, InputfieldAsmSelect',
+            'requiredBy' => 'InputfieldStreetAddress',
+            'icon'       => 'envelope',
+            'require'    => 'php>5.4.0',
+        ];
+    }
+
+
+
+    /**
+     *
+     */
+    public function init() {
+        parent::init();
+        $dir = dirname(__FILE__);
+        require_once "$dir/StreetAddress.php";
+    }
+
+
+
+    /**
+     * Allow checking for empty values in conditionals
+     */
+    public function isEmptyValue(Field $field, $value) {
+        return $value->isEmpty();
+    }
+
+
+
+    /**
+     *
+     */
+    public static function prepareLinesCallback($line, $key, $data = [])
+    {
+        $parser = @$data['parser'];
+        if ($parser) {
+            $line = str_replace('.parent', '', $line); // prevent traversal up the page tree
+            $parser->format($line);
+        }
+
+        return $line;
+    }
+
+
+
+    /**
+     * Add a before hook to this method to allow adjustment of the address lines stored in the street address.
+     */
+    public function ___formatValue(Page $page, Field $field, $street_address)
+    {
+        return self::format($page, $field, $street_address);
+    }
+
+
+
+    /**
+     * Format street address for output
+     *
+     * TODO consider removing requirement for the $field input.
+     */
+    public static function format(Page $page, Field $field, $street_address)
+    {
+        $parser = false;
+        $html   = 0 == $field->outputHTML;
+
+        /**
+         * Set up the tag parser to process the line...
+         */
+        if (wire('modules')->isInstalled('TextformatterTagParser')) {
+            $parser = wire('modules')->get("TextformatterTagParser");
+            $parser->set('context', ['page' => $page]);
+        }
+
+        /**
+         * Use the owning field's settings to determine display of the address field...
+         */
+        switch ($field->showOutputCountry) {
+        case 0:
+            $street_address->origin_iso = strtoupper($street_address->country_iso);
+            break;
+
+        case 1:
+            $street_address->origin_iso = '++';
+            break;
+
+        case 2:
+            $street_address->origin_iso = strtoupper($field->originISO);
+            break;
+        }
+
+
+        $street_address->prepareLines(
+            [__CLASS__, 'prepareLinesCallback'],
+            [
+                'parser' => $parser,
+                'html'   => $html,
+            ]
+        );
+
+        // Use the default ISO for formatting if the address field does not have an ISO code
+        if (empty($street_address->country_iso)) {
+            $street_address->country_iso = $field->defaultISO;
+        }
+
+
+        /* $street_address->append_destination_iso  = $field->appendDestinationISO; */
+        /* $street_address->destination_country_fmt = $field->destinationCountryFormat; */
+        $overrides = [
+            'append_destination_iso'  => $field->appendDestinationISO,
+            'destination_country_fmt' => $field->destinationCountryFormat,
+        ];
+
+        /**
+         * Get the address to format itself...
+         */
+        if ($field->outputSingleLine == 1) {
+            $address = $street_address->formatSingle($html, ', ', $overrides);
+        } else {
+            $address = $street_address->format($html, false, $overrides);
+        }
+
+        return $address;
+    }
+
+
+
+    /**
+     * Add mapping to different name for use in page selectors
+     * This enables us to use it like "address.city=Exeter, address.country_iso=GB"
+     */
+    public function getMatchQuery($query, $table, $subfield, $operator, $value)
+    {
+        $subfields = StreetAddress::getAddressFieldNames();
+        if ($subfield == 'country_iso') {
+            $subfield = 'data';
+        } else if (in_array($subfield, $subfields)) {
+            $subfield = 'data_' . $subfield;
+        }
+
+        if ($this->wire('database')->isOperator($operator)) {
+            return parent::getMatchQuery($query, $table, $subfield, $operator, $value);
+        }
+
+        $ft = new DatabaseQuerySelectFulltext($query);
+        $ft->match($table, $subfield, $operator, $value);
+        return $query;
+    }
+
+
+
+    /**
+     *
+     */
+    public function getInputfield(Page $page, Field $field)
+    {
+        $inputfield = $this->modules->get('InputfieldStreetAddress');
+
+        // This inputfield uses a page & field object.
+        $inputfield->setPage($page);
+        $inputfield->setField($field);
+
+        return $inputfield;
+    }
+
+
+
+    /**
+     * There are no compatible fieldtypes that I know of.
+     */
+    public function ___getCompatibleFieldtypes(Field $field)
+    {
+        return null;
+    }
+
+
+
+    /**
+     *
+     */
+    public function getBlankValue(Page $page, Field $field)
+    {
+        return new StreetAddress();
+    }
+
+
+
+    /**
+     * Any value will get sanitized before setting it to a page object
+     * and before saving the data
+     */
+    public function sanitizeValue(Page $page, Field $field, $value)
+    {
+        if(!$value instanceof StreetAddress) {
+            $value = $this->getBlankValue($page, $field);
+        }
+
+        // All known postal codes use capital letters if they use letters at all, so...
+        $value->postal_code = mb_convert_case($value->postal_code, MB_CASE_UPPER, 'UTF-8');
+
+        $changes   = 0;
+        $subfields = StreetAddress::getAddressFieldNames();
+        foreach ($subfields as $f) {
+            $value->$f = trim($value->$f); // We don't store runs of spaces at start or end of a string.
+            if ($value->isChanged($f)) {
+                $changes++;
+            }
+        }
+        if ($changes > 0) {
+            $page->trackChange($field->name);
+        }
+
+        return $value;
+    }
+
+
+
+    /**
+     *
+     */
+    public function ___wakeupValue(Page $page, Field $field, $value)
+    {
+        $address   = $this->getBlankValue($page, $field);
+        $subfields = StreetAddress::getAddressFieldNames();
+        $san       = $this->wire('sanitizer');
+
+        // populate the address
+        $address->country_iso = $san->text($value['data']);
+        foreach ($subfields as $f) {
+            if ('country_iso' === $f) continue;
+            if ('origin_iso' === $f) continue;
+            $address->$f = $san->text(trim($value["data_$f"]));
+        }
+        $address->snapshot(); // Allow the isChanged() function to work.
+
+        return $address;
+    }
+
+
+
+
+    /**
+     *
+     */
+    public function ___sleepValue(Page $page, Field $field, $value)
+    {
+        if(!$value instanceof StreetAddress) {
+            throw new WireException("Expecting an instance of StreetAddress");
+        }
+
+        $san        = $this->wire('sanitizer');
+        $sleepValue = [];
+        $changed    = [];
+        $subfields  = StreetAddress::getAddressFieldNames();
+        foreach ($subfields as $f) {
+            if (in_array($f, ['origin_iso', 'country'])) continue;
+            $pre  = $value->$f;
+            $post = $san->text(trim($pre));
+            if ('country_iso' === $f) {
+                $sleepValue["data"] = $post;
+            } else {
+                $sleepValue["data_$f"] = $post;
+            }
+        }
+
+        /* if (!empty($changed)) { */
+        /*     // Cache formatted HTML and standard values? */
+        /* } */
+
+        return $sleepValue;
+    }
+
+
+
+    /**
+     * Get the database schema for this field
+     *
+     * @param Field $field In case it's needed for the schema, but usually should not.
+     * @return array
+     */
+    public function getDatabaseSchema(Field $field)
+    {
+        $schema = parent::getDatabaseSchema($field);
+        $subfields = StreetAddress::getAddressFieldNames();
+        foreach ($subfields as $f) {
+            if ('country_iso' === $f) {
+                $schema['data']     = 'VARCHAR(3) NOT NULL default ""';
+            } else {
+                $schema['data_'.$f] = 'VARCHAR(128) NOT NULL default ""';
+                $schema['keys']['data_'.$f] = "KEY data_$f(`data_$f`)";
+            }
+        }
+
+        return $schema;
+    }
+
+
+
+    /**
+     * Try copying the format overrides file back into our location from where the PW Upgrades module may have
+     * moved it. This allows preservation of an installation's formats_overrides.php file between upgrades done
+     * with the PW Upgrades module. Manual upgrades by unpacking a zip in place should not overwrite the
+     * destination file as it doesn't exist in the source zip.
+     */
+    public function ___upgrade($fromVersion, $toVersion) {
+        $sitemods   = wire('config')->paths->siteModules;
+        $backup     = $sitemods . ".FieldtypeStreetAddress";
+        $file       = "formats_overrides.php";
+        $src        = $backup . DIRECTORY_SEPARATOR . $file;
+        $dst        = __DIR__ . DIRECTORY_SEPARATOR . $file;
+        $result     = false;
+        $exists     = __("exists");
+        $dnexist    = __("does not exist");
+        $src_exists = file_exists($src);
+        $dst_exists = file_exists($dst);
+        $msg        = '';
+        $do_copy    = false;
+
+        if ($dst_exists) {
+            // Do not overwrite the current version of the override file - the user may have updated it.
+            $msg = __("Override file exists, will not overwrite.");
+        } elseif ($src_exists && !$dst_exists) {
+            // Copy the backed-up overrides into our installation.
+            $do_copy = true;
+        } elseif (!$src_exists && !$dst_exists) {
+            // Create the default, empty, overrides file from the example file?
+            $src = __DIR__ . DIRECTORY_SEPARATOR . "example.formats_overrides.php";
+            $do_copy = true;
+        }
+
+        if ($do_copy) {
+            $result = copy($src, $dst);
+            if ($result) {
+                $msg = sprintf(__("Successfully copied %s to %s"), $src, $dst);
+            } else {
+                $src_exists = ($src_exists) ? $exists : $dnexist;
+                $dst_exists = ($dst_exists) ? $exists : $dnexist;
+                $msg = sprintf(__("Failed to copy %s (%s) to %s (%s)"), $src, $src_exists, $dst, $dst_exists);
+            }
+        }
+
+        if (!empty($msg)) {
+            wire('pages')->message($msg);
+        }
+
+    }
+}
