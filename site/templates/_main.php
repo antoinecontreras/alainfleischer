@@ -16,7 +16,16 @@ namespace ProcessWire;
 
 $home = $pages->get('/');
 /** @var HomePage $home */
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 
+if (!$session->get('visited')) {
+    $session->set('visited', true);
+	bd("First visit");
+} else {
+	bd("Not first visit");
+}
 $urlMenu = [];
 $urlMenu[] = ['url' => $pages->findOne("name=home")->url, 'title' => 'Collection'];
 $urlMenu[] = ['url' => $pages->findOne("name=fond_de_dotation")->url, 'title' => 'Fond de Dotation'];
@@ -41,9 +50,9 @@ if ($backMenu) {
 <head id="html-head">
 	<meta http-equiv="content-type" content="text/html; charset=utf-8" />
 	<title><?php echo $page->title; ?></title>
-	<link rel="stylesheet" href="<?= $config->urls->templates ?>font/Selecta-Regular.woff2" as="font" type="font/woff2" crossorigin>
-
+	<link rel="stylesheet" href="<?= $config->urls->templates ?>font/Selecta-Regular.woff" as="font" type="font/woff" crossorigin>
 	<link rel="stylesheet" type="text/css" href="<?php echo $config->urls->templates; ?>styles/main.css" />
+	
 	<script src="<?php echo $config->urls->templates; ?>scripts/main.js"></script>
 </head>
 <style>
@@ -52,11 +61,32 @@ if ($backMenu) {
 			background: <?= $home->color; ?>;
 		}
 	}
+    @font-face {
+        font-family: 'Selecta-Regular';
+        src: url('<?= $config->urls->templates ?>font/Selecta-Regular.woff2') format('woff2');
+        font-weight: normal;
+        font-style: normal;
+    }
+	@keyframes introOffColor {
+    from {
+        height: 100dvh;
+        background: black;
+    }
+
+    to {
+        height: calc(var(--menu-height) + var(--margin) / 2);
+        background: <?= $home->color; ?>;
+    }
+}
+
+    body {
+        font-family: 'Selecta-Regular', sans-serif;
+    }
 </style>
 
 <body id="html-body" data-page-type="<?= $page->template ?>">
 
-	<div class="menu" id="topnav" style="background:<?= $home->color; ?>">
+	<div class="menu intro" id="topnav">
 		<a draggable='false' href='<?=$backLink?>' class='menu_back <?= ($backMenu) ? 'active' : '' ?>'>
 			<img src="<?= $config->urls->templates ?>picto/back.svg" alt="" />
 		</a>
@@ -73,7 +103,9 @@ if ($backMenu) {
 				$activeClass = ($item['url'] == $page->url) ? 'active' : '';
 				echo "<a draggable='false' href='{$item['url']}' class='{$activeClass}'>{$item['title']}</a> ";
 			} ?>
-			<a class="contact_mobile" draggable="false" href="mailto:<?php echo $home->email; ?>">Contact</a>
+			<div>
+				<a class="contact_mobile" draggable="false" href="mailto:<?php echo $home->email; ?>">Contact</a>
+			</div>
 		</div>
 		<div draggable='false' class="menu_logo">
 			<div class="logo">Alain</div>

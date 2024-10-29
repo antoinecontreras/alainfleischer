@@ -38,7 +38,7 @@ uksort($newsByDate, function ($a, $b) {
                         <?php
                         $cartel = $new->textarea;
                         if (!empty($cartel)) : ?>
-                            <h2 class="nav_cartel"><?= $cartel; ?></h2>
+                            <div class="nav_cartel"><?=html_entity_decode($cartel); ?></div>
                         <?php endif; ?>
                     </div>
                     <div>

@@ -203,20 +203,22 @@ function mobileNav(options) {
 // Ajout pour mobile : clique sur les items et ajout de la classe active
 function mobileNewsNav(options) {
   options.items.forEach((item) => {
-    item.addEventListener("click", function () {
-      // Retirer la classe 'active' de tous les autres éléments
+    item.addEventListener("click", function (event) {
+      if(event.target.parentNode.hasAttribute('href') ) return
+      const isActive = this.classList.contains("active");
       options.items.forEach((el) => {
         // const navCartel = el.querySelector(".nav_cartelMobile");
-        if (el) {
+        if (el)
           el.classList.remove("active");
-        }
       });
-
-      // Ajouter la classe 'active' à l'élément cliqué
-      console.log(this);
-      // const targetNavCartel = this.querySelector(".nav_cartelMobile");
-      if (this) {
+      if (isActive) {
+        this.classList.remove("active");
+      } else {
         this.classList.add("active");
+        this.scrollIntoView({
+          behavior: "smooth", // Défilement fluide
+          block: "start",     // Aligner le haut de l'élément avec le haut de la fenêtre
+        });
       }
     });
   });
