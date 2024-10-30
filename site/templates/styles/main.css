@@ -34,7 +34,7 @@ a {
 
 html,
 body {
-    height: 100%;
+    height: 100dvh;
     margin: 0;
 }
 
@@ -100,41 +100,90 @@ h2 {
     display: none;
 }
 
-.intro#topnav::before {
-    transition: all ease 1s;
-    height: 100dvh;
-    background: black;
-    animation: introOffColor 1.6s cubic-bezier(0.89, 0.17, 0.45, 1) 2s;
+.intro.menu>.menu_items,
+.intro.menu>.contact,
+.intro.menu .menu_burger {
+    opacity: 0;
+    animation: fadeOut .3s linear 3.45s;
     animation-fill-mode: forwards;
-
 }
 
-.intro#topnav div.menu_logo {
-    height: calc(100dvh - var(--margin) / 2);
+@keyframes fadeOut {
+    from {
+        opacity: 0;
+    }
 
-    animation: introOffHeight 1.6s cubic-bezier(0.89, 0.17, 0.45, 1)  2s ;
+    to {
+        opacity: 1;
+        ;
+    }
+}
+
+.intro.menu+h1+.container.home {
+    opacity: 0;
+    height: 0;
+    animation: displayFade .3s linear 3.45s;
     animation-fill-mode: forwards;
+}
+
+@keyframes displayFade {
+    0% {
+        height: 0;
+        opacity: 0;
+    }
+
+    50% {
+        height: var(--height-container);
+        opacity: 0;
+    }
+
+    to {
+        height: var(--height-container);
+        opacity: 1;
+    }
 }
 
 .intro .menu_logo .logo {
     color: rgb(0, 0, 0);
-    animation: introOffLogo 3.6s cubic-bezier(0.89, 0.17, 0.45, 1)   ;
+    animation: introOffLogo 3.6s cubic-bezier(0.89, 0.17, 0.45, 1);
     animation-fill-mode: forwards;
 }
+
+@media only screen and (max-width: 1300px) {
+
+
+    .intro#topnav div.menu_logo {
+        height: calc(100% - var(--margin) / 2);
+
+        animation: introOffHeight 1.7s cubic-bezier(0.89, 0.17, 0.45, 1) 1.6s;
+        animation-fill-mode: forwards;
+    }
+
+    .intro .menu_logo .logo {
+        color: rgb(0, 0, 0);
+        animation: introOffLogo 3.6s cubic-bezier(0.89, 0.17, 0.45, 1);
+        animation-fill-mode: forwards;
+    }
+}
+
 @keyframes introOffLogo {
     0% {
         color: rgb(0, 0, 0);
     }
+
     10% {
         color: white;
     }
+
     60% {
         color: white;
     }
+
     100% {
         color: black;
     }
 }
+
 @keyframes introOffHeight {
     from {
         height: calc(100dvh - var(--margin) / 2);
@@ -155,7 +204,7 @@ h2 {
         top: 0;
         left: 0;
         width: 100%;
-        height: calc(var(--menu-height) + var(--margin) / 2);
+        height: calc(var(--menu-height) + var(--margin) / 4);
         z-index: 10;
     }
 
@@ -239,7 +288,7 @@ h2 {
     }
 
     .menu {
-        padding: calc(var(--margin) *1) calc(var(--margin) / 2) calc(var(--margin) / 2);
+        padding: calc(var(--margin) * 1) calc(var(--margin) / 2) calc(var(--margin) * 1);
         align-content: center;
         align-items: center;
     }
@@ -469,7 +518,7 @@ h2 {
 
 .nav_gallery img {
     width: 100%;
-    max-height: 100%;
+    max-height: calc(100dvh - var(--menu-height));
     object-fit: cover;
 }
 
@@ -522,7 +571,7 @@ h2 {
     width: 100%;
     height: auto;
     object-fit: cover;
-    max-height: calc(100vh - var(--menu-height));
+    max-height: calc(100dvh - var(--menu-height));
 }
 
 .nav_wallpaper img {
@@ -705,9 +754,11 @@ h2 {
 }
 
 .nav_cartelMobile {
-    display: none;
+    /* display: none; */
+    visibility: hidden;
     grid-column: 1 / -1;
     font-size: 1.8rem;
+    /* transition: visibility 2s linear 1s; */
 }
 
 
@@ -718,7 +769,7 @@ h2 {
     }
 
     .interactive_item.active .nav_cartelMobile {
-        display: block;
+        visibility: visible;
     }
 
     .news_item .new_link {
@@ -759,7 +810,7 @@ h2 {
 
     .collection_tab .news_item .news_description p {
         font-size: calc(var(--margin) / 1);
-        /* color: black; */
+
     }
 
     .interactive_item.active .nav_cartelMobile {
@@ -772,15 +823,16 @@ h2 {
     .collection_tab .news_item {
         padding-left: calc(var(--margin) / 2);
         justify-content: flex-start;
+        position: relative;
+        flex: 0 0 calc(var(--margin));
+        overflow: hidden;
+        transition: .5s all;
     }
 
     .active.news_item {
         padding-top: calc(1.5* var(--margin));
         flex: 1 0 calc(100% - var(--margin));
-        position: relative;
         gap: calc(var(--margin) / 2);
-        /* border-left: 6px solid #80ceff; */
-
     }
 
     .active.news_item::after {
@@ -888,7 +940,7 @@ p:not(.news_title) {
         color: black;
         /* background: #cacaca; */
         background: none;
-        font-size: calc(var(--margin) * 2);
+        /* font-size: calc(var(--margin) * 2); */
     }
 }
 

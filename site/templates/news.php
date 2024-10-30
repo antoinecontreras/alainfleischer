@@ -33,7 +33,7 @@ uksort($newsByDate, function ($a, $b) {
     <div class="page_row collection_nav">
         <?php foreach ($newsByDate as $date => $newsItems) :
             foreach ($newsItems as $new): ?>
-                <div class="nav_item news" id="<?= urlencode($date) ?>">
+                <div class="nav_item news " id="<?= urlencode($date) ?>">
                     <div class="nav_news">
                         <?php
                         $cartel = $new->textarea;

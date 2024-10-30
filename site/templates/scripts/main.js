@@ -2,6 +2,7 @@ let VALUES = {
   homeInit: false,
   homeActive: false,
   currentMode: null, // Permet de stocker si on est en mode 'desktop' ou 'mobile'
+  newMobileActive: null,
 };
 
 document.addEventListener("contextmenu", function (e) {
@@ -200,25 +201,30 @@ function mobileNav(options) {
   VALUES.homeActive = true;
 }
 
-// Ajout pour mobile : clique sur les items et ajout de la classe active
 function mobileNewsNav(options) {
   options.items.forEach((item) => {
     item.addEventListener("click", function (event) {
-      if(event.target.parentNode.hasAttribute('href') ) return
+      if (event.target.parentNode.hasAttribute("href")) return;
+
       const isActive = this.classList.contains("active");
+
+      // Désactiver tous les éléments
       options.items.forEach((el) => {
-        // const navCartel = el.querySelector(".nav_cartelMobile");
-        if (el)
-          el.classList.remove("active");
+        if (el) el.classList.remove("active");
       });
+
+      // Si l'élément était déjà actif, on le replie (ne pas scroll)
       if (isActive) {
         this.classList.remove("active");
       } else {
+        console.log(this);
         this.classList.add("active");
-        this.scrollIntoView({
-          behavior: "smooth", // Défilement fluide
-          block: "start",     // Aligner le haut de l'élément avec le haut de la fenêtre
-        });
+        setTimeout(() => {
+          this.scrollIntoView({
+            behavior: "smooth",
+            block: "start",
+          });
+        }, 500);
       }
     });
   });

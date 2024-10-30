@@ -16,32 +16,44 @@ namespace ProcessWire;
 
 $home = $pages->get('/');
 /** @var HomePage $home */
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
 
-if (!$session->get('visited')) {
-    $session->set('visited', true);
-	bd("First visit");
-} else {
-	bd("Not first visit");
-}
 $urlMenu = [];
 $urlMenu[] = ['url' => $pages->findOne("name=home")->url, 'title' => 'Collection'];
 $urlMenu[] = ['url' => $pages->findOne("name=fond_de_dotation")->url, 'title' => 'Fond de Dotation'];
 $urlMenu[] = ['url' => $pages->findOne("name=bio")->url, 'title' => 'Biographie'];
 $urlMenu[] = ['url' => $pages->findOne("name=news")->url, 'title' => 'News'];
-
 $hslColor = $home->color;
 list($h, $s, $l) = sscanf($hslColor, 'hsl(%d, %d%%, %d%%)');
 $dynamicLight = "hsl($h, 64%, 93%)";
 $backMenu = $page->template->name == "projects";
-$backLink= null;
+$backLink = null;
+$activeSession = false;
+if (session_status() === PHP_SESSION_NONE) {
+	session_start();
+}
+// session_unset(); // Vide toutes les variables de session
+
+if (!$session->get('visited')) {
+	if ($page->template->name !== 'home') {
+		echo $config->httpHost;
+			$session->redirect("/");
+	
+	}else{
+		$session->set('visited', true);
+	}
+} else {
+	
+	
+	
+	$activeSession = true;
+}
+
+
 if ($backMenu) {
-    if (isset($_GET['filter'])) {
-        $valeur = $_GET['filter']; // Récupère la valeur du filtre
-		$backLink = $pages->findOne("template=home")->url."#".$valeur;
-    }
+	if (isset($_GET['filter'])) {
+		$valeur = $_GET['filter']; // Récupère la valeur du filtre
+		$backLink = $pages->findOne("template=home")->url . "#" . $valeur;
+	}
 }
 ?>
 <!DOCTYPE html>
@@ -52,42 +64,129 @@ if ($backMenu) {
 	<title><?php echo $page->title; ?></title>
 	<link rel="stylesheet" href="<?= $config->urls->templates ?>font/Selecta-Regular.woff" as="font" type="font/woff" crossorigin>
 	<link rel="stylesheet" type="text/css" href="<?php echo $config->urls->templates; ?>styles/main.css" />
-	
+
 	<script src="<?php echo $config->urls->templates; ?>scripts/main.js"></script>
 </head>
 <style>
-	@media only screen and (max-width: 1300px) {
-		#topnav::before {
+	@font-face {
+		font-family: 'Selecta-Regular';
+		src: url('<?= $config->urls->templates ?>font/Selecta-Regular.woff2') format('woff2');
+		font-weight: normal;
+		font-style: normal;
+	}
+
+	.menu {
+		background: <?= $home->color; ?>;
+	}
+
+	.intro.menu {
+		background: black;
+		height: 100dvh;
+	}
+
+	@keyframes introMenu {
+		from {
+			height: 100dvh;
+			background: black;
+		}
+
+		to {
+			height: 4rem;
 			background: <?= $home->color; ?>;
 		}
 	}
-    @font-face {
-        font-family: 'Selecta-Regular';
-        src: url('<?= $config->urls->templates ?>font/Selecta-Regular.woff2') format('woff2');
-        font-weight: normal;
-        font-style: normal;
-    }
-	@keyframes introOffColor {
-    from {
-        height: 100dvh;
-        background: black;
-    }
 
-    to {
-        height: calc(var(--menu-height) + var(--margin) / 2);
-        background: <?= $home->color; ?>;
-    }
-}
+	@keyframes introMenuBefore {
+		from {
+			height: 100dvh;
+			background: black;
+		}
 
-    body {
-        font-family: 'Selecta-Regular', sans-serif;
-    }
+		to {
+			height: 7rem;
+			background: <?= $home->color; ?>;
+		}
+	}
+
+	@media only screen and (max-width: 1300px) {
+		#topnav:not(.intro)::before {
+			background: <?= $home->color; ?>;
+		}
+
+		.intro#topnav::before {
+			animation: introMenuSmallBefore 1.6s cubic-bezier(0.89, 0.17, 0.45, 1) 2s;
+			animation-fill-mode: forwards;
+		}
+
+		@keyframes introMenuSmallBefore {
+			from {
+				height: 100dvh;
+				/* background: black; */
+			}
+
+			to {
+				height: 4rem;
+				background: <?= $home->color; ?>;
+			}
+		}
+
+	}
+
+	.intro.menu {
+		animation: introMenuSmall 1.6s cubic-bezier(0.89, 0.17, 0.45, 1) 2s;
+		animation-fill-mode: forwards;
+	}
+
+	@keyframes introMenuSmall {
+		from {
+			height: 100dvh;
+			background: black;
+		}
+
+		to {
+			height: 3rem;
+			background: <?= $home->color; ?>;
+		}
+	}
+
+
+	@media (hover: none) {
+		.intro#topnav::before {
+			animation: introOffColor 1.6s cubic-bezier(0.89, 0.17, 0.45, 1) 2s;
+			animation-fill-mode: forwards;
+		}
+
+		@keyframes introOffColor {
+			from {
+				height: 100dvh;
+				background: black;
+			}
+
+			to {
+				height: 7rem;
+				background: <?= $home->color; ?>;
+			}
+		}
+
+	}
+
+
+
+
+
+
+
+
+
+	body {
+		font-family: 'Selecta-Regular', sans-serif;
+	}
 </style>
 
 <body id="html-body" data-page-type="<?= $page->template ?>">
-
-	<div class="menu intro" id="topnav">
-		<a draggable='false' href='<?=$backLink?>' class='menu_back <?= ($backMenu) ? 'active' : '' ?>'>
+	<!-- style="background:<?php $home->color; ?>"  -->
+	<div class="menu  <?= $activeSession ? '' : 'intro' ?>" id="topnav">
+		<a draggable='false' href='<?= $backLink ?>' class='menu_back <?= ($backMenu) ? 'active' : '' ?>'>
 			<img src="<?= $config->urls->templates ?>picto/back.svg" alt="" />
 		</a>
 		<input type="checkbox" id="menuToggle" class="menu_toggle">
