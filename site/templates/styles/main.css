@@ -464,9 +464,8 @@ h2 {
     display: flex;
     flex-direction: column;
     grid-gap: var(--margin);
-    overflow: scroll;
-    scrollbar-width: none;
-    -ms-overflow-style: none;
+    /* overflow: hidden; */
+
 }
 
 .nav_news>.nav_cartel {
@@ -493,6 +492,10 @@ h2 {
 
 .collection_nav .nav_item.active {
     display: block;
+    overflow: scroll;
+    scroll-snap-type: y mandatory;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
 }
 
 .collection_nav .nav_item.news.active {
@@ -516,11 +519,29 @@ h2 {
     flex-direction: column;
 }
 
-.nav_gallery img {
+.nav_image img {
     width: 100%;
     max-height: calc(100dvh - var(--menu-height));
     object-fit: cover;
 }
+
+.nav_image {
+    position: sticky;
+    top: 0;
+    background: white;
+    display: flex;
+    flex-direction: column;
+    height: calc(100dvh - var(--menu-height));
+}
+
+
+
+.nav_item.active>* {
+    scroll-snap-align: start;
+ 
+}
+
+
 
 .projectSmall {
     overflow: scroll;
@@ -680,6 +701,8 @@ h2 {
 .collection_items>a {
     aspect-ratio: 1/1;
 }
+
+
 
 .collection_tab .collection_item {
     /* height: calc(var(--height-container) / 4); */
