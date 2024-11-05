@@ -132,7 +132,7 @@ function desktopNav(options) {
     const onClick = (event) => {
       if (isDesktopLayout.value) {
         event.preventDefault();
-        options.targetNav.scrollTo({
+        options.targetNav.querySelector(".active").scrollTo({
           top: options.decayNav,
           behavior: "smooth",
         });
@@ -212,8 +212,6 @@ function mobileNewsNav(options) {
       options.items.forEach((el) => {
         if (el) el.classList.remove("active");
       });
-
-      // Si l'élément était déjà actif, on le replie (ne pas scroll)
       if (isActive) {
         this.classList.remove("active");
       } else {
