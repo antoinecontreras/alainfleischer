@@ -39,7 +39,7 @@ foreach ($projects as $project) {
 						</div>
 
 						<?php if ($project->gallery) : ?>
-							<div class="nav_gallery">
+							<div class="nav_gallery" onclick="simulateClick(this)">
 								<?php
 
 								foreach ($project->gallery as $image) : ?>
@@ -49,7 +49,7 @@ foreach ($projects as $project) {
 									$class = $isLandscape ? 'landscape' : '';
 
 									?>
-									<img class="nav_image <?= $class ?>" draggable="false" width="<?=$image->width; ?>" src="<?php echo $image->url; ?>" />
+									<img class="nav_image <?= $class ?>" draggable="false" width="<?= $image->width; ?>" src="<?php echo $image->url; ?>" />
 									<!-- </div> -->
 								<?php endforeach; ?>
 

@@ -516,15 +516,16 @@ h2 {
 }
 
 .nav_gallery {
-    display: flex;
-    margin-right: calc(var(--margin) / 2);
-    overflow: scroll;
+    cursor: s-resize;
     flex: 1;
+    display: flex;
+    gap: calc(var(--margin) / 2);
+    flex-direction: column;
+    margin: calc(var(--margin) / 2) calc(var(--margin) / 2) calc(var(--margin) / 2) 0;
+    overflow: scroll;
     scroll-snap-type: y mandatory;
     scrollbar-width: none;
     -ms-overflow-style: none;
-    flex-direction: column;
-    gap: calc(var(--margin) / 2);
 }
 
 .nav_cartel {
@@ -542,6 +543,17 @@ h2 {
     font-size: 1.8rem;
     line-height: 1.8rem;
     color: var(--dark-grey);
+}
+.nav_scroll {
+    display: none;
+    width: calc(var(--margin) * 0.8);
+    height: calc(var(--margin) 0.8);
+    cursor: pointer;
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: rotate(-90deg) translate(20%, -50%);
+    /* background: white; */
 }
 
 .nav_image {

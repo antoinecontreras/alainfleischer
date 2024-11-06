@@ -3,8 +3,10 @@ let VALUES = {
   homeActive: false,
   currentMode: null, // Permet de stocker si on est en mode 'desktop' ou 'mobile'
   newMobileActive: null,
+  counterScroll: 0,
+  showGallery: false,
 };
-
+let currentItem = null; 
 document.addEventListener("contextmenu", function (e) {
   if (e.target.tagName === "IMG") e.preventDefault();
 });
@@ -37,17 +39,25 @@ window.addEventListener("resize", function () {
   initdesktopNav(options); // Réinitialiser le comportement en fonction de la nouvelle taille d'écran
 });
 
+
 function initdesktopNav(options) {
   if (VALUES.pageType !== "home") return;
 
+  // Conserver l'élément actuel pendant le redimensionnement
   if (isDesktopLayout.value && VALUES.currentMode !== "desktop") {
     disableListeners(options); // Désactiver les listeners mobiles
     desktopNav(options); // Activer les listeners desktop
-    VALUES.currentMode = "desktop"; // On marque qu'on est en mode desktop
+    VALUES.currentMode = "desktop";
   } else if (!isDesktopLayout.value && VALUES.currentMode !== "mobile") {
     disableListeners(options); // Désactiver les listeners desktop
     mobileNav(options); // Activer les listeners mobiles
-    VALUES.currentMode = "mobile"; // On marque qu'on est en mode mobile
+    VALUES.currentMode = "mobile";
+  }
+  
+  // Restaurer l'état de currentItem après le redimensionnement
+  if (currentItem && isDesktopLayout.value) {
+    currentItem.classList.add("active");
+    options.currentItem = currentItem; // Associer l'item actuel dans les options
   }
 }
 
@@ -102,7 +112,7 @@ function initNav() {
   const nav = document.querySelectorAll(".nav_item");
   const targetNav = document.querySelector(".collection_nav");
   let decayNav;
-  let options = {
+  options = {
     items: items,
     nav: nav,
     targetNav: targetNav,
@@ -110,33 +120,63 @@ function initNav() {
   };
   return options;
 }
-
+function simulateClick(e) {
+  if (VALUES.counterScroll <= 1) {
+    VALUES.counterScroll;
+    VALUES.showGallery = true;
+  }
+  if (options.currentItem) options.currentItem.click();
+}
 function desktopNav(options) {
   options.items.forEach((item) => {
     const onMouseEnter = () => {
       if (isDesktopLayout.value) {
-        options.targetNav.scrollTo({
-          top: 0,
-          behavior: "instant",
-        });
+        // Mettre à jour currentItem lorsqu'un élément est survolé
+        currentItem = item; // Mémoriser l'élément en cours
+        options.currentItem = item; // Stocker aussi dans les options pour simulateClick
+
+        // Logique de gestion de l'item actif
         options.nav.forEach((navItem) => navItem.classList.remove("active"));
         const searchTarget = document.getElementById(item.id);
         if (searchTarget) {
           searchTarget.classList.add("active");
-          options.decayNav =
-            searchTarget.querySelector(".nav_cartel").offsetHeight;
+          options.active = document.querySelector(".nav_item.active");
+          options.cartel = searchTarget.querySelector(".nav_cartel");
+          options.gallery = searchTarget.querySelector(".nav_gallery");
+          options.imgs = searchTarget.querySelectorAll(".nav_gallery img");
         }
+
+        options.gallery.scrollTo({ top: 0, behavior: "instant" });
+        options.active.scrollTo({ top: 0, behavior: "instant" });
+        VALUES.counterScroll = 0;
+        VALUES.showGallery = false;
       }
     };
 
     const onClick = (event) => {
-      if (isDesktopLayout.value) {
-        event.preventDefault();
-        options.targetNav.querySelector(".active").scrollTo({
-          top: options.decayNav,
-          behavior: "smooth",
-        });
+      if (!isDesktopLayout.value) return;
+      event.preventDefault();
+
+      const { showGallery, counterScroll } = VALUES;
+      const { active, cartel, gallery, imgs } = options;
+
+      if (!showGallery) {
+        const offset = cartel.offsetHeight;
+        active.scrollBy({ top: offset, behavior: "smooth" });
+
+        if (counterScroll === 1) {
+          VALUES.showGallery = true;
+          VALUES.counterScroll = 0;
+        }
+      } else {
+        if (counterScroll < imgs.length) {
+          gallery.scrollBy({ top: 100, behavior: "smooth" });
+        } else {
+          VALUES.counterScroll = 0;
+          gallery.scrollTo({ top: 0, behavior: "smooth" });
+        }
       }
+      VALUES.counterScroll++;
     };
 
     item.addEventListener("mouseenter", onMouseEnter);
@@ -148,10 +188,12 @@ function desktopNav(options) {
   VALUES.homeActive = true;
 }
 
+
 function newsDesktopNav(options) {
   options.items.forEach((item) => {
     const onMouseEnter = () => {
       if (isDesktopLayout.value) {
+        VALUES.counterScroll = 0;
         options.targetNav.scrollTo({
           top: 0,
           behavior: "instant",
@@ -215,7 +257,6 @@ function mobileNewsNav(options) {
       if (isActive) {
         this.classList.remove("active");
       } else {
-        console.log(this);
         this.classList.add("active");
         setTimeout(() => {
           this.scrollIntoView({
