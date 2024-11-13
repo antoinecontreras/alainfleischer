@@ -21,7 +21,8 @@ document.addEventListener("DOMContentLoaded", function () {
       initdesktopNav(options); // Initialisation selon la taille de l'écran
       VALUES.homeInit = true;
       break;
-    case "projects":
+    case "bio":
+      initBioLinks();
       break;
     case "news":
       const optionsNew = initNav();
@@ -39,7 +40,45 @@ window.addEventListener("resize", function () {
   initdesktopNav(options); // Réinitialiser le comportement en fonction de la nouvelle taille d'écran
 });
 
+function initBioLinks() {
+  const links = document.querySelectorAll(".bio-link");
 
+  // Gestion du hash au chargement de la page
+  const hash = window.location.hash;
+  if (hash) {
+    activateBioLink(hash.substring(1));
+  } else if (links.length > 0) {
+    // Si aucun hash, activer le premier lien par défaut
+    activateBioLink(links[0].getAttribute("href").substring(1));
+  }
+
+  // Ajouter l'événement de clic sur chaque lien
+  links.forEach(link => {
+    link.addEventListener("click", function (event) {
+      event.preventDefault();
+      const target = this.getAttribute("href").substring(1); // Récupère le texte après le #
+      activateBioLink(target);
+    });
+  });
+}
+
+function activateBioLink(target) {
+  const links = document.querySelectorAll(".bio-link");
+
+  // Supprimer la classe active de tous les liens
+  links.forEach(link => {
+    link.classList.remove("active");
+  });
+
+  // Activer le lien correspondant au hash
+  const activeLink = document.querySelector(`.bio-link[href="#${target}"]`);
+  if (activeLink) {
+    activeLink.classList.add("active");
+
+    // Mettre à jour l'URL pour refléter l'état actif
+    window.location.hash = target;
+  }
+}
 function initdesktopNav(options) {
   if (VALUES.pageType !== "home") return;
 

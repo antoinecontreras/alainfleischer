@@ -39,7 +39,7 @@ foreach ($projects as $project) {
 						</div>
 
 						<?php if ($project->gallery) : ?>
-							<div class="nav_gallery" onclick="simulateClick(this)">
+							<div class="nav_gallery" onclick="simulateClick()">
 								<?php
 
 								foreach ($project->gallery as $image) : ?>

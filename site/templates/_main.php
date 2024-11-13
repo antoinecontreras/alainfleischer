@@ -63,9 +63,10 @@ if ($backMenu) {
 	<meta http-equiv="content-type" content="text/html; charset=utf-8" />
 	<title><?php echo $page->title; ?></title>
 	<link rel="stylesheet" href="<?= $config->urls->templates ?>font/Selecta-Regular.woff" as="font" type="font/woff" crossorigin>
-	<link rel="stylesheet" type="text/css" href="<?php echo $config->urls->templates; ?>styles/main.css" />
-
+	<link rel="stylesheet" type="text/css" href="<?= $config->urls->templates; ?>styles/main.css" />
+	
 	<script src="<?php echo $config->urls->templates; ?>scripts/main.js"></script>
+	<link rel="icon"  type="image/x-icon" href="<?= $config->urls->templates; ?>/picto/logo.ico" />
 </head>
 <style>
 	@font-face {
