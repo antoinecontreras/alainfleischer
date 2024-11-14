@@ -114,6 +114,14 @@ foreach ($projects as $project) {
 										alt="<?= $project->title; ?>"
 										style=" 
 									transform-origin: <?= $focusX; ?>% <?= $focusY; ?>%;" />
+								<?php elseif ($project->img == null) : ?>
+									<p><?= $project->title; ?></p>
+									<div>
+										<!-- <img src="<? $config->urls->templates ?>picto/link.svg" alt="" /> -->
+										<?php if ($project->text): ?>
+											<p class='collection_localite'> <?= $project->text ?></p>
+										<?php endif; ?>
+									</div>
 								<?php endif; ?>
 							</a>
 

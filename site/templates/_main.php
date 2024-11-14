@@ -19,7 +19,7 @@ $home = $pages->get('/');
 
 $urlMenu = [];
 $urlMenu[] = ['url' => $pages->findOne("name=home")->url, 'title' => 'Collection'];
-$urlMenu[] = ['url' => $pages->findOne("name=fond_de_dotation")->url, 'title' => 'Fond de Dotation'];
+$urlMenu[] = ['url' => $pages->findOne("name=dotation")->url, 'title' => 'Fond de Dotation'];
 $urlMenu[] = ['url' => $pages->findOne("name=bio")->url, 'title' => 'Biographie'];
 $urlMenu[] = ['url' => $pages->findOne("name=news")->url, 'title' => 'News'];
 $hslColor = $home->color;
